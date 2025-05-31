@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_file
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
 from dotenv import load_dotenv
 from auth import authenticate_user, get_user
@@ -10,7 +10,7 @@ import io
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY")
+app.secret_key = os.getenv("SECRET_KEY", "4ee391a2288b1576cc319184fbee0ab7454161604ef51b0a12f7d2d8255bed60")  # Fallback secret key
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 
@@ -48,16 +48,19 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
-# Chat and other routes unchanged...
+# Chat and other routes
 @app.route('/chat', methods=['POST'])
 @login_required
 def chat():
-    message = request.json["message"]
-    chat_history = session.get("chat_history", [])
-    response = get_gemini_response(message)
-    chat_history.append({"user": message, "bot": response})
-    session["chat_history"] = chat_history
-    return jsonify({"response": response})
+    try:
+        message = request.json["message"]
+        chat_history = session.get("chat_history", [])
+        response = get_gemini_response(message)
+        chat_history.append({"user": message, "bot": response})
+        session["chat_history"] = chat_history
+        return jsonify({"response": response})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/history')
 @login_required
@@ -76,7 +79,12 @@ def download():
         download_name='chat_history.json'
     )
 
+@app.route('/clear-chat', methods=['POST'])
+@login_required
+def clear_chat():
+    session["chat_history"] = []
+    return jsonify({"success": True})
+
 if __name__ == "__main__":
-    app.run(debug=True)
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port, debug=True)

@@ -3,22 +3,104 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Smart ChatBot</title>
+  <title>Smart ChatBot AI</title>
   <link rel="stylesheet" href="/static/style.css"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
-    <h1>ChatBot 🤖</h1>
-    <button id="toggle-dark">🌗 Toggle Dark Mode</button>
-    <button id="download">⬇️ Save Chat</button>
-    <button onclick="logout()">🚪 Logout</button>
-    <div id="chat-box"></div>
-    <div class="input-container">
-      <input type="text" id="user-input" placeholder="Ask me anything..."/>
-      <button onclick="sendMessage()">Send</button>
-      <button onclick="startListening()">🎤</button>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <h1 class="app-title">
+          <i class="fas fa-robot"></i>
+          AI ChatBot
+        </h1>
+      </div>
+      <div class="header-right">
+        <button class="btn btn-icon" id="toggle-dark" title="Toggle Dark Mode">
+          <i class="fas fa-moon"></i>
+        </button>
+        <button class="btn btn-icon" id="download" title="Download Chat History">
+          <i class="fas fa-download"></i>
+        </button>
+        <button class="btn btn-icon" id="clear-chat" title="Clear Chat">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+        <button class="btn btn-danger" onclick="logout()" title="Logout">
+          <i class="fas fa-sign-out-alt"></i>
+          Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- Chat Container -->
+    <div class="chat-container">
+      <div id="chat-box" class="chat-box">
+        <div class="welcome-message">
+          <div class="welcome-icon">
+            <i class="fas fa-robot"></i>
+          </div>
+          <h3>Welcome to AI ChatBot!</h3>
+          <p>I'm here to help you with any questions or tasks. Start a conversation below.</p>
+        </div>
+      </div>
+
+      <!-- Typing Indicator -->
+      <div id="typing-indicator" class="typing-indicator" style="display: none;">
+        <div class="typing-dots">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <span>AI is thinking...</span>
+      </div>
+
+      <!-- Input Container -->
+      <div class="input-container">
+        <div class="input-wrapper">
+          <input 
+            type="text" 
+            id="user-input" 
+            placeholder="Type your message here..."
+            autocomplete="off"
+          />
+          <button class="btn btn-icon voice-btn" onclick="startListening()" title="Voice Input">
+            <i class="fas fa-microphone" id="mic-icon"></i>
+          </button>
+          <button class="btn btn-primary send-btn" onclick="sendMessage()" title="Send Message">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <button class="quick-btn" onclick="sendPredefinedMessage('What can you help me with?')">
+        <i class="fas fa-question-circle"></i>
+        What can you do?
+      </button>
+      <button class="quick-btn" onclick="sendPredefinedMessage('Tell me a joke')">
+        <i class="fas fa-smile"></i>
+        Tell me a joke
+      </button>
+      <button class="quick-btn" onclick="sendPredefinedMessage('Explain quantum physics in simple terms')">
+        <i class="fas fa-atom"></i>
+        Explain science
+      </button>
+      <button class="quick-btn" onclick="sendPredefinedMessage('Help me write a professional email')">
+        <i class="fas fa-envelope"></i>
+        Write email
+      </button>
     </div>
   </div>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay" style="display: none;">
+    <div class="spinner"></div>
+  </div>
+
   <script src="/static/script.js"></script>
 </body>
 </html>
